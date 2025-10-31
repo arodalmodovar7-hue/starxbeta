@@ -6,45 +6,118 @@
     <title>Unblocked Games Collection</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: #fff;
             text-align: center;
+            margin: 0;
+            padding: 0;
         }
         h1 {
-            color: #333;
+            font-size: 3em;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         .game-list {
             list-style-type: none;
             padding: 0;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .game-list li {
-            margin: 10px 0;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s, background-color 0.3s;
+            width: 200px; /* Set a fixed width for each game item */
+        }
+        .game-list li:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        .game-list img {
+            width: 100%; /* Make images responsive */
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
         a {
             text-decoration: none;
-            color: #007BFF;
+            color: #ff6f61;
+            font-size: 1.2em;
+            font-weight: bold;
         }
         a:hover {
-            text-decoration: underline;
+            color: #fff;
+            text-shadow: 0 0 10px #ff6f61, 0 0 20px #ff6f61;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #ddd;
         }
     </style>
 </head>
 <body>
     <h1>Unblocked Games Collection</h1>
     <ul class="game-list">
-        <li><a href="games/1v1LOL.html">1v1.LOL</a></li>
-        <li><a href="games/2048.html">2048</a></li>
-        <li><a href="games/breakout.html">Breakout</a></li>
-        <li><a href="games/chess.html">Chess</a></li>
-        <li><a href="games/dino.html">Dino</a></li>
-        <li><a href="games/invaders.html">Invaders</a></li>
-        <li><a href="games/minesweeper.html">Minesweeper</a></li>
-        <li><a href="games/pong.html">Pong</a></li>
-        <li><a href="games/retro-bowl.html">Retro Bowl</a></li>
-        <li><a href="games/slope.html">Slope</a></li>
-        <li><a href="games/snake.html">Snake</a></li>
-        <li><a href="games/sudoku.html">Sudoku</a></li>
-        <li><a href="games/tetris.html">Tetris</a></li>
+        <li>
+            <img src="images/1v1LOL.png" alt="1v1.LOL">
+            <a href="games/1v1LOL.html">1v1.LOL</a>
+        </li>
+        <li>
+            <img src="images/2048.png" alt="2048">
+            <a href="games/2048.html">2048</a>
+        </li>
+        <li>
+            <img src="images/breakout.png" alt="Breakout">
+            <a href="games/breakout.html">Breakout</a>
+        </li>
+        <li>
+            <img src="images/chess.png" alt="Chess">
+            <a href="games/chess.html">Chess</a>
+        </li>
+        <li>
+            <img src="images/dino.png" alt="Dino">
+            <a href="games/dino.html">Dino</a>
+        </li>
+        <li>
+            <img src="images/invaders.png" alt="Invaders">
+            <a href="games/invaders.html">Invaders</a>
+        </li>
+        <li>
+            <img src="images/minesweeper.png" alt="Minesweeper">
+            <a href="games/minesweeper.html">Minesweeper</a>
+        </li>
+        <li>
+            <img src="images/pong.png" alt="Pong">
+            <a href="games/pong.html">Pong</a>
+        </li>
+        <li>
+            <img src="images/retro-bowl.png" alt="Retro Bowl">
+            <a href="games/retro-bowl.html">Retro Bowl</a>
+        </li>
+        <li>
+            <img src="images/slope.png" alt="Slope">
+            <a href="games/slope.html">Slope</a>
+        </li>
+        <li>
+            <img src="images/snake.png" alt="Snake">
+            <a href="games/snake.html">Snake</a>
+        </li>
+        <li>
+            <img src="images/sudoku.png" alt="Sudoku">
+            <a href="games/sudoku.html">Sudoku</a>
+        </li>
+        <li>
+            <img src="images/tetris.png" alt="Tetris">
+            <a href="games/tetris.html">Tetris</a>
+        </li>
     </ul>
+    <footer>
+        &copy; 2025 Unblocked Games Collection. All rights reserved.
+    </footer>
 </body>
 </html>
