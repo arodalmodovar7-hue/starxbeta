@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cookie Clicker - Unblocked Games</title>
+<style>
+  body{margin:0;font-family:Arial;background:#071018;color:#fff;display:flex;flex-direction:column;min-height:100vh;align-items:center}
+  header{padding:14px;text-align:center}
+  main{padding:12px;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .cookie{width:180px;height:180px;border-radius:12px;background:#f4d39e;display:flex;align-items:center;justify-content:center;font-size:48px;cursor:pointer;color:#6b3b00}
+  .shop{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .item{background:#0f1620;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04)}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+</style>
+</head>
+<body>
+<header><h1>🍪 Cookie Clicker</h1></header>
+<main>
+  <div id="score" style="font-size:20px">Cookies: 0 — CPS: 0</div>
+  <div class="cookie" id="cookie">🍪</div>
+  <div class="shop" id="shop"></div>
+  <div style="margin-top:8px"><button id="reset">Reset</button> <a class="button" href="../index.html">Back to menu</a></div>
+</main>
+<footer style="padding:12px;color:#9aa3a9">Buy upgrades to increase CPS.</footer>
+
+<script>
+(()=> {
+  let cookies = 0, cps = 0;
+  const upgrades = [
+    {id:'c1',name:'Cursor',price:15,cps:0.1},
+    {id:'c2',name:'Fábrica',price:100,cps:1},
+    {id:'c3',name:'Factoría',price:500,cps:5}
+  ];
+  const scoreEl = document.getElementById('score');
+  const shopEl = document.getElementById('shop');
+  const cookie = document.getElementById('cookie');
+
+  function renderShop(){
+    shopEl.innerHTML='';
+    upgrades.forEach(u=>{
+      const div = document.createElement('div'); div.className='item';
+      const btn = document.createElement('button'); btn.textContent = `${u.name} — ${Math.round(u.price)} galletas`; btn.addEventListener('click', ()=>{
+        if(cookies >= u.price){ cookies -= u.price; cps += u.cps; u.price = Math.round(u.price*1.6); renderAll(); }
+      });
+      div.appendChild(btn); shopEl.appendChild(div);
+    });
+  }
+  function renderAll(){ scoreEl.textContent = `Galletas: ${Math.floor(cookies)} — CPS: ${Math.round(cps*100)/100}`; renderShop(); }
+  cookie.addEventListener('click', ()=>{ cookies += 1; renderAll(); });
+  const tick = setInterval(()=>{ cookies += cps/2; renderAll(); },500);
+  document.getElementById('reset').addEventListener('click', ()=>{ cookies=0; cps=0; upgrades[0].price=15; upgrades[1].price=100; upgrades[2].price=500; renderAll(); });
+  renderAll();
+})();
+</script>
+</body>
+</html>

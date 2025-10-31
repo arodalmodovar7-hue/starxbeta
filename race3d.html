@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Race 3D - Juegos Desbloqueados</title>
+<style>
+  :root{--bg:#071018}
+  body{margin:0;font-family:Arial;background:var(--bg);color:#fff;display:flex;flex-direction:column;min-height:100vh;align-items:center}
+  header{padding:14px;text-align:center}
+  main{padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .stage{width:900px;height:420px;perspective:900px;border-radius:8px;background:linear-gradient(#052233,#021018);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .road{width:600px;height:800px;transform-style:preserve-3d;position:relative;transform:translateZ(-200px) rotateX(60deg)}
+  .lane{position:absolute;left:0;right:0;margin:auto;width:540px;height:80px;border-radius:8px;background:#2a2a2a;box-shadow:inset 0 0 0 6px rgba(0,0,0,0.2)}
+  .car{position:absolute;width:60px;height:40px;background:#ff5d5d;border-radius:6px;bottom:40px;left:270px;transform-style:preserve-3d}
+  .obstacle{position:absolute;width:60px;height:40px;background:#6b6b6b;border-radius:6px;transform-origin:center center}
+  .hud{margin-top:8px}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+</style>
+</head>
+<body>
+<header><h1>🏁 Race 3D (CSS 3D - ligero)</h1></header>
+<main>
+  <div class="hint">Usa A/D o Flechas para moverte. Evita obstáculos.</div>
+  <div class="stage" id="stage">
+    <div class="road" id="road">
+      <!-- lanes rendered by JS (CSS 3D transforms give depth) -->
+    </div>
+  </div>
+  <div class="hud"><span id="score">Puntuación: 0</span></div>
+  <div style="margin-top:8px">
+    <button id="restart">Reiniciar</button>
+    <a class="button" href="../index.html">Volver al menú</a>
+  </div>
+</main>
+
+<script>
+/*
+  Implementación ligera: la "carretera" se compone de elementos .lane transformados en Z para dar sensación de profundidad.
+  Obstáculos aparecen y se acercan (se escala y se traslada). Movimiento lateral con A/D.
+*/
+(() => {
+  const road = document.getElementById('road');
+  const scoreEl = document.getElementById('score');
+  let obstacles = [], running = true, score = 0, laneCount = 5, lanes = [];
+  const car = document.createElement('div'); car.className='car'; road.appendChild(car);
+  let carLane = 2; // 0..laneCount-1
+  function setup(){
+    road.innerHTML=''; road.appendChild(car); obstacles=[];
+    lanes = [];
+    for(let i=0;i<laneCount;i++){
+      const lane = document.createElement('div'); lane.className='lane';
+      const z = i*80; lane.style.transform = `translateY(${ -i*70 }px) translateZ(${ -400 + i*80 }px) scale(${1 - i*0.07})`;
+      road.appendChild(lane); lanes.push(lane);
+    }
+    car.style.left = `${ (road.clientWidth - 60)/2 }px`;
+    carLane = 2; placeCar();
+    score = 0; scoreEl.textContent = 'Puntuación: 0';
+  }
+
+  function placeCar(){
+    const laneWidth = 540 / laneCount;
+    const left = (road.clientWidth - 540)/2 + carLane*laneWidth + (laneWidth - 60)/2;
+    car.style.left = left + 'px';
+  }
+
+  function spawnObstacle(){
+    const ob = document.createElement('div'); ob.className='obstacle';
+    road.appendChild(ob);
+    const laneIndex = Math.floor(Math.random()*laneCount);
+    ob.dataset.lane = laneIndex;
+    ob.style.left = ( (road.clientWidth - 540)/2 + laneIndex*(540/laneCount) + (540/laneCount - 60)/2 ) + 'px';
+    ob.style.transform = `translateY(-200px) translateZ(-800px) scale(0.4)`;
+    obstacles.push({el:ob, z:-800, lane:laneIndex});
+  }
+
+  function update(){
+    if(!running) return;
+    // move obstacles forward (increase z)
+    for(let i=obstacles.length-1;i>=0;i--){
+      const o=obstacles[i]; o.z += 40;
+      const scale = 1 + (o.z/1000);
+      const ty =  -200 + (o.z/2);
+      o.el.style.transform = `translateY(${ty}px) translateZ(${o.z}px) scale(${scale})`;
+      // collision simple: if z > -60 and lanes equal -> collision
+      if(o.z > -60 && o.lane === carLane){
+        running = false; alert('Game Over — puntuación: '+score); break;
+      }
+      if(o.z > 500){ o.el.remove(); obstacles.splice(i,1); score++; scoreEl.textContent = 'Puntuación: '+score; }
+    }
+    requestAnimationFrame(update);
+  }
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='a' || e.key==='ArrowLeft'){ carLane = Math.max(0, carLane-1); placeCar(); }
+    if(e.key==='d' || e.key==='ArrowRight'){ carLane = Math.min(laneCount-1, carLane+1); placeCar(); }
+  });
+
+  let spawner;
+  function start(){
+    running = true; setup();
+    spawner = setInterval(spawnObstacle, 900);
+    update();
+  }
+  document.getElementById('restart').addEventListener('click', ()=>{ clearInterval(spawner); start(); });
+  start();
+})();
+</script>
+</body>
+</html>

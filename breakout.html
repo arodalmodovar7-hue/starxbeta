@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Breakout - Unblocked Games</title>
+<style>
+  body{margin:0;font-family:Arial;background:#071018;color:#fff;display:flex;flex-direction:column;min-height:100vh}
+  header{padding:14px;text-align:center}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px}
+  canvas{background:#071a24;border-radius:8px;max-width:100%;height:auto}
+  .controls{display:flex;gap:8px}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+  footer{padding:12px;text-align:center;color:#9aa3a9}
+</style>
+</head>
+<body>
+<header><h1>🧱 Breakout</h1></header>
+<main>
+  <div class="controls">Move the paddle with the mouse</div>
+  <canvas id="c" width="900" height="420"></canvas>
+  <div class="controls">
+    <button id="restart">Restart</button>
+    <a class="button" href="../index.html">Back to menu</a>
+  </div>
+</main>
+<footer>Lightweight Breakout with many blocks.</footer>
+
+<script>
+(()=> {
+  const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
+  const paddle = {w:120,h:12,x:(canvas.width-120)/2,y:canvas.height-40};
+  let ball = {x:canvas.width/2,y:canvas.height-60,r:8,vx:5,vy:-5};
+  const cols=8, rows=4, bricks=[], bw=100, bh=24, padding=12;
+  function initBricks(){ bricks.length=0; for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) bricks.push({x:c*(bw+padding)+36,y:r*(bh+padding)+30,w:bw,h:bh,alive:true}); }
+  function draw(){
+    ctx.fillStyle='#071a24'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#fff'; ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
+    ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
+    for(const b of bricks) if(b.alive){ ctx.fillStyle='#3ab'; ctx.fillRect(b.x,b.y,b.w,b.h); }
+  }
+  function update(){
+    ball.x += ball.vx; ball.y += ball.vy;
+    if(ball.x < ball.r || ball.x > canvas.width - ball.r) ball.vx *= -1;
+    if(ball.y < ball.r) ball.vy *= -1;
+    if(ball.y > canvas.height) { resetBall(); }
+    // paddle collision
+    if(ball.x > paddle.x && ball.x < paddle.x + paddle.w && ball.y + ball.r > paddle.y) { ball.vy *= -1; ball.y = paddle.y - ball.r; }
+    // bricks
+    for(const b of bricks){
+      if(!b.alive) continue;
+      if(ball.x > b.x && ball.x < b.x + b.w && ball.y - ball.r < b.y + b.h && ball.y + ball.r > b.y){ b.alive=false; ball.vy *= -1; break; }
+    }
+  }
+  let raf;
+  function loop(){ update(); draw(); raf=requestAnimationFrame(loop); }
+  function resetBall(){ ball.x=canvas.width/2; ball.y=canvas.height-60; ball.vx=5; ball.vy=-5; }
+  canvas.addEventListener('mousemove', e=>{
+    const rect = canvas.getBoundingClientRect();
+    paddle.x = Math.max(0, Math.min(canvas.width - paddle.w, e.clientX - rect.left - paddle.w/2));
+  });
+  document.getElementById('restart').addEventListener('click', ()=>{ cancelAnimationFrame(raf); initBricks(); resetBall(); loop(); });
+  // init
+  initBricks(); loop();
+})();
+</script>
+</body>
+</html>

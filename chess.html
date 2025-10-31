@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Chess - Unblocked Games</title>
+<style>
+  body{margin:0;font-family:Arial;background:#071018;color:#fff;display:flex;flex-direction:column;min-height:100vh;align-items:center}
+  header{padding:14px;text-align:center}
+  main{padding:12px}
+  .board{display:grid;grid-template-columns:repeat(8,60px);gap:0;border:4px solid #111}
+  .cell{width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer}
+  .controls{display:flex;gap:8px;justify-content:center;margin:10px 0}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+  footer{padding:12px;text-align:center;color:#9aa3a9;width:100%}
+</style>
+</head>
+<body>
+<header><h1>♟️ Chess (2 players, basic moves)</h1></header>
+<main>
+  <div class="controls"><button id="reset">Reset Board</button><a class="button" href="../index.html">Back to menu</a></div>
+  <div id="board" class="board"></div>
+</main>
+<footer>Piece movement allowed (no AI). Play local turns.</footer>
+
+<script>
+(()=> {
+  const initial = [
+    ['r','n','b','q','k','b','n','r'],
+    ['p','p','p','p','p','p','p','p'],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['','','','','','','',''],
+    ['P','P','P','P','P','P','P','P'],
+    ['R','N','B','Q','K','B','N','R']
+  ];
+  const sym = { 'p':'♟','r':'♜','n':'♞','b':'♝','q':'♛','k':'♚',
+                'P':'♙','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔' };
+  let board = JSON.parse(JSON.stringify(initial));
+  let turn = 'white'; let selected = null;
+  const boardEl = document.getElementById('board');
+
+  function render(){
+    boardEl.innerHTML='';
+    for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+      const el = document.createElement('div'); el.className='cell';
+      const dark = (r+c)%2; el.style.background = dark? '#b58863' : '#f0d9b5';
+      el.dataset.r = r; el.dataset.c = c;
+      const piece = board[r][c]; el.textContent = piece? sym[piece] : '';
+      el.addEventListener('click', ()=> onCellClick(r,c));
+      boardEl.appendChild(el);
+    }
+  }
+
+  function onCellClick(r,c){
+    const piece = board[r][c];
+    if(selected){
+      // move (no rule enforcement beyond basic alternation)
+      const [sr,sc] = selected;
+      board[r][c] = board[sr][sc]; board[sr][sc]='';
+      selected = null; turn = (turn==='white')?'black':'white'; render();
+    } else {
+      if(piece){
+        selected = [r,c];
+      }
+    }
+  }
+
+  document.getElementById('reset').addEventListener('click', ()=>{ board = JSON.parse(JSON.stringify(initial)); selected=null; render(); });
+  render();
+})();
+</script>
+</body>
+</html>

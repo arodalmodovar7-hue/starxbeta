@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dino - Unblocked Games</title>
+<style>
+  :root{--bg:#0b0b0b;--fg:#fff;--accent:#ffcc00}
+  body{margin:0;background:linear-gradient(#071018,#08101a);color:var(--fg);font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;min-height:100vh}
+  header{padding:14px;text-align:center}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px}
+  #gameWrap{background:#071019;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)}
+  canvas{display:block;max-width:100%;height:auto;background:#e9f0f5}
+  .row{display:flex;gap:10px;align-items:center}
+  button, a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--fg);padding:8px 12px;border-radius:8px;text-decoration:none;cursor:pointer}
+  .hint{color:#bfc6cc;font-size:14px}
+  footer{padding:12px;text-align:center;color:#9aa3a9}
+</style>
+</head>
+<body>
+<header><h1>🦖 Dino (clone)</h1></header>
+<main>
+  <div class="row"><div class="hint">Press SPACE or click to jump. Survive as long as you can!</div></div>
+  <div id="gameWrap"><canvas id="c" width="900" height="260"></canvas></div>
+  <div class="row">
+    <button id="restart">Restart</button>
+    <a class="button" href="../index.html">Back to menu</a>
+  </div>
+</main>
+<footer>Lightweight game - clone version.</footer>
+
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  let running = true, score = 0, raf;
+  const dino = {x:60, y:200, w:42, h:36, vy:0, onGround:true};
+  const gravity = 0.9;
+  const obstacles = [];
+  let spawnTimer = 0;
+
+  function spawn(){ const h = 28 + Math.random()*34; obstacles.push({x:canvas.width+20,y:220-h,w:18+Math.random()*28,h}); }
+
+  function reset(){
+    running = true; score = 0; obstacles.length=0; dino.y=200; dino.vy=0; dino.onGround=true; spawnTimer = 60;
+    loop();
+  }
+
+  function update(){
+    dino.vy += gravity; dino.y += dino.vy;
+    if(dino.y >= 200){ dino.y = 200; dino.vy = 0; dino.onGround=true; }
+    spawnTimer--;
+    if(spawnTimer<=0){ spawnTimer = 70 + Math.floor(Math.random()*80); spawn(); }
+    for(let i=obstacles.length-1;i>=0;i--){
+      obstacles[i].x -= 6 + Math.min(6, Math.floor(score/150));
+      if(obstacles[i].x + obstacles[i].w < 0) obstacles.splice(i,1);
+    }
+    for(const ob of obstacles){
+      if(dino.x < ob.x + ob.w && dino.x + dino.w > ob.x && dino.y < ob.y + ob.h && dino.y + dino.h > ob.y){
+        running = false;
+      }
+    }
+    score++;
+  }
+
+  function draw(){
+    // sky
+    ctx.fillStyle = '#dff3ff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    // ground
+    ctx.fillStyle = '#bdbdbd'; ctx.fillRect(0,240,canvas.width,20);
+    // dino
+    ctx.fillStyle = '#ffcc00'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+    // obstacles
+    ctx.fillStyle = '#6b6b6b'; obstacles.forEach(o=>ctx.fillRect(o.x,o.y,o.w,o.h));
+    // score
+    ctx.fillStyle='#111'; ctx.font='18px sans-serif'; ctx.fillText('Score: '+score,12,24);
+    if(!running){
+      ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#fff'; ctx.font='28px sans-serif'; ctx.fillText('Game Over — Press Restart', canvas.width/2 -160, canvas.height/2);
+    }
+  }
+
+  function loop(){
+    if(!running) return cancelAnimationFrame(raf);
+    update(); draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function jump(){ if(dino.onGround){ dino.vy = -13; dino.onGround=false; } }
+
+  document.addEventListener('keydown', e=>{ if(e.code==='Space'){ e.preventDefault(); jump(); } });
+  canvas.addEventListener('mousedown', ()=> jump());
+  document.getElementById('restart').addEventListener('click', ()=> { running=false; cancelAnimationFrame(raf); reset(); });
+
+  reset();
+})();
+</script>
+</body>
+</html>

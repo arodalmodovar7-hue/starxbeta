@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cubo 3D - Juegos Desbloqueados</title>
+<style>
+  body{margin:0;font-family:Arial;background:#071018;color:#fff;display:flex;flex-direction:column;min-height:100vh;align-items:center}
+  header{padding:14px;text-align:center}
+  main{padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .stage{width:520px;height:320px;perspective:900px;border-radius:8px;background:linear-gradient(#041018,#021018);display:flex;align-items:center;justify-content:center}
+  .cube{width:180px;height:180px;position:relative;transform-style:preserve-3d;transition:transform 150ms linear}
+  .face{position:absolute;width:180px;height:180px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;border:2px solid rgba(255,255,255,0.06)}
+  .f1{background:#ff6b6b;transform:rotateY(0deg) translateZ(90px)}
+  .f2{background:#6bc1ff;transform:rotateY(90deg) translateZ(90px)}
+  .f3{background:#9bff7f;transform:rotateY(180deg) translateZ(90px)}
+  .f4{background:#ffdf6b;transform:rotateY(-90deg) translateZ(90px)}
+  .f5{background:#d39eff;transform:rotateX(90deg) translateZ(90px)}
+  .f6{background:#ff9fb7;transform:rotateX(-90deg) translateZ(90px)}
+  .controls{margin-top:10px}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none;cursor:pointer}
+</style>
+</head>
+<body>
+<header><h1>🔷 Cubo 3D (CSS 3D)</h1></header>
+<main>
+  <div class="stage"><div class="cube" id="cube">
+    <div class="face f1">Front</div>
+    <div class="face f2">Right</div>
+    <div class="face f3">Back</div>
+    <div class="face f4">Left</div>
+    <div class="face f5">Top</div>
+    <div class="face f6">Bottom</div>
+  </div></div>
+  <div class="controls">
+    <button id="left">⟲</button>
+    <button id="right">⟳</button>
+    <button id="up">▲</button>
+    <button id="down">▼</button>
+    <a class="button" href="../index.html">Volver al menú</a>
+  </div>
+  <div style="margin-top:8px;color:#bfc6cc">Arrastra el cubo o usa los botones/teclas ← → ↑ ↓</div>
+</main>
+
+<script>
+(()=> {
+  const cube = document.getElementById('cube');
+  let rotX = -20, rotY = -20;
+  function apply(){ cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
+  apply();
+
+  let dragging=false, startX, startY;
+  cube.addEventListener('mousedown', e=>{ dragging=true; startX=e.clientX; startY=e.clientY; });
+  window.addEventListener('mousemove', e=>{ if(!dragging) return; rotY += (e.clientX - startX)*0.2; rotX -= (e.clientY - startY)*0.2; startX = e.clientX; startY = e.clientY; apply(); });
+  window.addEventListener('mouseup', ()=> dragging=false);
+
+  document.getElementById('left').addEventListener('click', ()=>{ rotY -= 45; apply(); });
+  document.getElementById('right').addEventListener('click', ()=>{ rotY += 45; apply(); });
+  document.getElementById('up').addEventListener('click', ()=>{ rotX += 20; apply(); });
+  document.getElementById('down').addEventListener('click', ()=>{ rotX -= 20; apply(); });
+
+  document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') rotY -= 15; if(e.key==='ArrowRight') rotY += 15; if(e.key==='ArrowUp') rotX += 10; if(e.key==='ArrowDown') rotX -= 10; apply(); });
+})();
+</script>
+</body>
+</html>

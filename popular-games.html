@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popular Games Gallery - Unblocked Games</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      padding: 20px;
+      background: #1e1e1e;
+      text-align: center;
+    }
+    .search-bar {
+      margin: 20px auto;
+      text-align: center;
+    }
+    .search-bar input {
+      width: 60%;
+      max-width: 600px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #2c2c2c;
+      color: #fff;
+    }
+    .nav-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+    .nav-link:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .game-card {
+      background: #1b1b1b;
+      border-radius: 10px;
+      overflow: hidden;
+      width: 200px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: white;
+    }
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+    .game-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background: #2c2c2c;
+    }
+    .game-card h2 {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px;
+      margin: 0;
+    }
+    footer {
+      text-align: center;
+      background: #1e1e1e;
+      padding: 15px;
+      color: #aaa;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎮 Popular Games Hub</h1>
+  <p>Explore trending and classic games</p>
+  <a href="index.html" class="nav-link">← Back to Main Menu</a>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search games, consoles, genres...">
+</div>
+
+<div class="gallery">
+  <a href="games/slope.html" class="game-card" data-name="slope">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' style='stop-color:%2300ff88'/%3E%3Cstop offset='100%25' style='stop-color:%230066ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='200' height='150'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' fill='%23fff' text-anchor='middle' dy='.3em'%3E⛷️%3C/text%3E%3C/svg%3E" alt="Slope">
+    <h2><strong>Slope</strong></h2>
+  </a>
+  <a href="games/retrobowl.html" class="game-card" data-name="retro bowl">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Crect fill='%23654321' width='200' height='150'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' fill='%23fff' text-anchor='middle' dy='.3em'%3E🏈%3C/text%3E%3C/svg%3E" alt="Retro Bowl">
+    <h2><strong>Retro Bowl</strong></h2>
+  </a>
+  <a href="games/run3.html" class="game-card" data-name="run 3">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Crect fill='%231a1a2e' width='200' height='150'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' fill='%2300fff7' text-anchor='middle' dy='.3em'%3E🏃%3C/text%3E%3C/svg%3E" alt="Run 3">
+    <h2><strong>Run 3</strong></h2>
+  </a>
+  <a href="games/1v1lol.html" class="game-card" data-name="1v1 lol">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150'%3E%3Crect fill='%23ff6b6b' width='200' height='150'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' fill='%23fff' text-anchor='middle' dy='.3em'%3E🎯%3C/text%3E%3C/svg%3E" alt="1v1.LOL">
+    <h2><strong>1v1.LOL</strong></h2>
+  </a>
+</div>
+
+<footer>
+  © 2025 Unblocked Games — Popular games collection
+</footer>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+const gameCards = document.querySelectorAll('.game-card');
+
+searchInput.addEventListener('input', function() {
+  const searchTerm = this.value.toLowerCase();
+  
+  gameCards.forEach(card => {
+    const gameName = card.getAttribute('data-name');
+    if (gameName.includes(searchTerm)) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

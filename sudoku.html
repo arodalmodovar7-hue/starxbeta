@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sudoku - Unblocked Games</title>
+<style>
+  body{margin:0;font-family:Arial;background:#071018;color:#fff;display:flex;flex-direction:column;min-height:100vh;align-items:center}
+  header{padding:14px;text-align:center}
+  main{padding:12px}
+  table{border-collapse:collapse;background:#091219;padding:6px;border-radius:8px}
+  td{border:1px solid rgba(255,255,255,0.06);padding:0}
+  input{width:46px;height:46px;font-size:20px;text-align:center;background:#0f1620;color:#fff;border:none}
+  .controls{display:flex;gap:8px;justify-content:center;margin:10px 0}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+  footer{padding:12px;text-align:center;color:#9aa3a9;width:100%}
+</style>
+</head>
+<body>
+<header><h1>🔢 Sudoku (puzzle)</h1></header>
+<main>
+  <div class="controls"><button id="check">Check</button><button id="reset">Reset</button><a class="button" href="../index.html">Back to menu</a></div>
+  <div id="board"></div>
+</main>
+<footer>9x9 puzzle — fill with numbers 1-9.</footer>
+
+<script>
+(()=> {
+  // Un puzzle simple (0 = vacío)
+  const puzzle = [
+    [5,3,0,0,7,0,0,0,0],
+    [6,0,0,1,9,5,0,0,0],
+    [0,9,8,0,0,0,0,6,0],
+    [8,0,0,0,6,0,0,0,3],
+    [4,0,0,8,0,3,0,0,1],
+    [7,0,0,0,2,0,0,0,6],
+    [0,6,0,0,0,0,2,8,0],
+    [0,0,0,4,1,9,0,0,5],
+    [0,0,0,0,8,0,0,7,9]
+  ];
+  let board = JSON.parse(JSON.stringify(puzzle));
+  const boardEl = document.getElementById('board');
+
+  function render(){
+    boardEl.innerHTML='';
+    const table = document.createElement('table');
+    for(let r=0;r<9;r++){
+      const tr = document.createElement('tr');
+      for(let c=0;c<9;c++){
+        const td = document.createElement('td');
+        const inp = document.createElement('input');
+        inp.type='text'; inp.maxLength=1;
+        if(puzzle[r][c] !== 0){ inp.value = puzzle[r][c]; inp.disabled=true; inp.style.background='#0a1420'; }
+        else { inp.value = board[r][c]===0? '' : board[r][c]; inp.addEventListener('input', ()=>{ const v = parseInt(inp.value)||0; board[r][c]=v; }); }
+        td.appendChild(inp); tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+    boardEl.appendChild(table);
+  }
+
+  function check(){
+    // simple validity: rows, cols, boxes have numbers 1-9 unique (skip zeros)
+    const ok = (arr) => {
+      const nums = arr.filter(n=>n>0);
+      return (new Set(nums)).size === nums.length;
+    };
+    for(let r=0;r<9;r++) if(!ok(board[r])) return alert('Fila '+(r+1)+' tiene duplicados');
+    for(let c=0;c<9;c++){ const col=[]; for(let r=0;r<9;r++) col.push(board[r][c]); if(!ok(col)) return alert('Columna '+(c+1)+' tiene duplicados'); }
+    for(let br=0;br<3;br++) for(let bc=0;bc<3;bc++){
+      const box=[]; for(let r=0;r<3;r++) for(let c=0;c<3;c++) box.push(board[br*3+r][bc*3+c]);
+      if(!ok(box)) return alert('Un bloque 3x3 tiene duplicados');
+    }
+    alert('Parece válido (según comprobación básica).');
+  }
+
+  document.getElementById('check').addEventListener('click', check);
+  document.getElementById('reset').addEventListener('click', ()=>{ board = JSON.parse(JSON.stringify(puzzle)); render(); });
+  render();
+})();
+</script>
+</body>
+</html>

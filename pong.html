@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pong - Unblocked Games</title>
+<style>
+  body{margin:0;font-family:Arial;background:#071018;color:#fff;display:flex;flex-direction:column;min-height:100vh}
+  header{padding:14px;text-align:center}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px}
+  canvas{background:#001018;border-radius:8px;display:block;max-width:100%;height:auto}
+  .controls{display:flex;gap:8px}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+  footer{padding:12px;text-align:center;color:#9aa3a9}
+</style>
+</head>
+<body>
+<header><h1>🏓 Pong</h1></header>
+<main>
+  <div class="controls">W/S = left • Arrows = right</div>
+  <canvas id="c" width="900" height="420"></canvas>
+  <div class="controls">
+    <button id="restart">Restart</button>
+    <a class="button" href="../index.html">Back to menu</a>
+  </div>
+</main>
+<footer>Simple Pong — fast and colorful.</footer>
+
+<script>
+(()=> {
+  const c = document.getElementById('c'); const ctx = c.getContext('2d');
+  const p1 = {x:20,y:170,w:12,h:80,vy:0}; const p2 = {x:c.width-32,y:170,w:12,h:80,vy:0};
+  let ball = {x:c.width/2,y:c.height/2,r:8,vx:5,vy:3};
+  let score1=0, score2=0;
+  let raf, running=true;
+
+  // Aumentar velocidad cada 5 segundos
+setInterval(() => {
+  const factor = 1.1; // aumenta un 10% cada 5 s
+  ball.vx *= factor;
+  ball.vy *= factor;
+}, 5000);
+
+  function resetBall(){ ball.x=c.width/2; ball.y=c.height/2; ball.vx=(Math.random()>0.5?1:-1)*(4+Math.random()*2); ball.vy=(Math.random()*4)-2; }
+
+  function update(){
+    p1.y += p1.vy; p2.y += p2.vy;
+    p1.y = Math.max(0,Math.min(c.height-p1.h,p1.y)); p2.y = Math.max(0,Math.min(c.height-p2.h,p2.y));
+    // AI for p2 (simple)
+    if(ball.y > p2.y + p2.h/2) p2.y += 4; else p2.y -= 4;
+    // ball
+    ball.x += ball.vx; ball.y += ball.vy;
+    if(ball.y < ball.r || ball.y > c.height - ball.r) ball.vy *= -1;
+    // collisions
+    if(ball.x - ball.r < p1.x + p1.w && ball.y > p1.y && ball.y < p1.y + p1.h){ ball.vx = Math.abs(ball.vx); }
+    if(ball.x + ball.r > p2.x && ball.y > p2.y && ball.y < p2.y + p2.h){ ball.vx = -Math.abs(ball.vx); }
+    if(ball.x < -50){ score2++; resetBall(); }
+    if(ball.x > c.width + 50){ score1++; resetBall(); }
+  }
+
+  function draw(){
+    ctx.fillStyle='#001018'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#fff'; for(let i=10;i<c.height;i+=28) ctx.fillRect(c.width/2 -2,i,4,16);
+    ctx.fillRect(p1.x,p1.y,p1.w,p1.h); ctx.fillRect(p2.x,p2.y,p2.w,p2.h);
+    ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
+    ctx.font='20px Arial'; ctx.fillText(score1, c.width/3,28); ctx.fillText(score2, c.width*2/3,28);
+  }
+
+  function loop(){ update(); draw(); raf=requestAnimationFrame(loop); }
+
+  function start(){ running=true; resetBall(); loop(); }
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='w') p1.vy=-7;
+    if(e.key==='s') p1.vy=7;
+    if(e.key==='ArrowUp') p2.vy=-7;
+    if(e.key==='ArrowDown') p2.vy=7;
+  });
+  document.addEventListener('keyup', e=>{
+    if(e.key==='w' || e.key==='s') p1.vy=0;
+    if(e.key==='ArrowUp' || e.key==='ArrowDown') p2.vy=0;
+  });
+
+  document.getElementById('restart').addEventListener('click', ()=>{ cancelAnimationFrame(raf); score1=0; score2=0; start(); });
+
+  start();
+})();
+</script>
+</body>
+</html>

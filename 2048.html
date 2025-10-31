@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>2048 - Unblocked Games</title>
+<style>
+  body{margin:0;font-family:Arial;background:#0b0f12;color:#fff;display:flex;flex-direction:column;min-height:100vh;align-items:center}
+  header{padding:14px;text-align:center}
+  main{width:100%;max-width:540px;padding:12px}
+  #board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#091219;padding:12px;border-radius:10px}
+  .cell{height:110px;background:#151a1d;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff}
+  .controls{display:flex;gap:8px;justify-content:center;margin:10px 0}
+  button,a.button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none}
+  footer{padding:12px;text-align:center;color:#9aa3a9;width:100%}
+</style>
+</head>
+<body>
+<header><h1>🔢 2048 (clone)</h1></header>
+<main>
+  <div class="controls">
+    <button id="new">New Game</button>
+    <a class="button" href="../index.html">Back to menu</a>
+  </div>
+  <div id="board"></div>
+</main>
+<footer>Simple version of 2048, use arrows to play.</footer>
+
+<script>
+(()=> {
+  const boardEl = document.getElementById('board');
+  let grid = Array.from({length:4}, ()=>Array(4).fill(0));
+
+  function spawn(){
+    const empties=[];
+    for(let r=0;r<4;r++) for(let c=0;c<4;c++) if(grid[r][c]===0) empties.push([r,c]);
+    if(!empties.length) return;
+    const [r,c] = empties[Math.floor(Math.random()*empties.length)];
+    grid[r][c] = Math.random()<0.9?2:4;
+  }
+  function render(){
+    boardEl.innerHTML='';
+    for(let r=0;r<4;r++) for(let c=0;c<4;c++){
+      const v = grid[r][c];
+      const div = document.createElement('div'); div.className='cell'; div.textContent = v? v : '';
+      if(v){ div.style.background = '#f39c12'; div.style.color = '#071018'; }
+      boardEl.appendChild(div);
+    }
+  }
+
+  function slide(row){
+    let arr = row.filter(x=>x!==0);
+    for(let i=0;i<arr.length-1;i++){
+      if(arr[i]===arr[i+1]){ arr[i]*=2; arr.splice(i+1,1); }
+    }
+    while(arr.length<4) arr.push(0);
+    return arr;
+  }
+
+  function move(dir){
+    let moved=false;
+    if(dir==='left'){
+      for(let r=0;r<4;r++){ const old = grid[r].slice(); grid[r] = slide(old); if(JSON.stringify(old)!==JSON.stringify(grid[r])) moved=true;}
+    } else if(dir==='right'){
+      for(let r=0;r<4;r++){ const old = grid[r].slice(); grid[r] = slide(old.reverse()).reverse(); if(JSON.stringify(old)!==JSON.stringify(grid[r])) moved=true;}
+    } else if(dir==='up'){
+      for(let c=0;c<4;c++){
+        const col=[grid[0][c],grid[1][c],grid[2][c],grid[3][c]];
+        const slid = slide(col);
+        for(let r=0;r<4;r++) grid[r][c]=slid[r];
+      }
+      moved=true;
+    } else if(dir==='down'){
+      for(let c=0;c<4;c++){
+        const col=[grid[0][c],grid[1][c],grid[2][c],grid[3][c]];
+        const slid = slide(col.reverse()).reverse();
+        for(let r=0;r<4;r++) grid[r][c]=slid[r];
+      }
+      moved=true;
+    }
+    if(moved) { spawn(); render(); }
+  }
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft') move('left');
+    if(e.key==='ArrowRight') move('right');
+    if(e.key==='ArrowUp') move('up');
+    if(e.key==='ArrowDown') move('down');
+  });
+
+  document.getElementById('new').addEventListener('click', ()=>{ grid = Array.from({length:4}, ()=>Array(4).fill(0)); spawn(); spawn(); render(); });
+
+  // init
+  grid = Array.from({length:4}, ()=>Array(4).fill(0)); spawn(); spawn(); render();
+})();
+</script>
+</body>
+</html>
